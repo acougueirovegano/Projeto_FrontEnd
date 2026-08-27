@@ -1,0 +1,583 @@
+/* ==========================================================================
+   Quadro de Tarefas Acadêmicas — styles.css
+   Design system: "Paper & Paste" (Digital Collage)
+   Referência visual: mockup Stitch (screen.png / code.html) enviado.
+
+   Metodologia: Mobile-first. Todo o CSS antes do primeiro @media é o da
+   tela estreita, sem nenhuma media query. Cada @media abaixo soma regras
+   para telas maiores via min-width — nunca max-width como estratégia.
+   ========================================================================== */
+
+/* ---------- Reset mínimo + box model ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, p, dl, dd, dt {
+  margin: 0;
+}
+
+/* ---------- Design tokens ---------- */
+
+:root {
+  /* superfície, texto, borda */
+  --color-surface: #fcf9ee;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f7f4e9;
+  --color-surface-container: #f1eee3;
+  --color-surface-container-high: #ebe8dd;
+  --color-on-surface: #1c1c15;
+  --color-on-surface-variant: #40484a;
+  --color-outline: #70797a;
+  --color-outline-variant: #bfc8ca;
+
+  /* marca */
+  --color-primary: #00434b;
+  --color-on-primary: #ffffff;
+  --color-secondary: #9c441a;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #ff9061;
+  --color-on-secondary-container: #752800;
+  --color-tertiary: #4f3900;
+  --color-on-tertiary: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  /* uma cor por status — usada em washi tape e borda, nunca redigitada */
+  --status-a-fazer: var(--color-outline);
+  --status-em-andamento: var(--color-primary);
+  --status-em-revisao: var(--color-secondary);
+  --status-concluida: var(--color-tertiary);
+
+  /* escala de espaçamento (mín. 3 níveis) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2.5rem;
+
+  /* raio de canto */
+  --radius-sm: 3px;
+  --radius-md: 6px;
+
+  /* tipografia — mesma trinca de fontes da referência */
+  --font-display: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-body: 'Courier Prime', ui-monospace, 'Courier New', monospace;
+  --font-annotation: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+
+  /* sombra "papel fino", como no mockup */
+  --shadow-paper: 3px 3px 0px rgba(0, 0, 0, 0.15);
+}
+
+/* ---------- Base de página (mobile-first) ---------- */
+
+body {
+  background-color: var(--color-surface);
+  /* grão de papel sutil — mesmo truque de SVG turbulence da referência */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  color: var(--color-on-surface);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+header {
+  padding: var(--space-4) var(--space-3) var(--space-3);
+}
+
+/* logo/título — elemento de assinatura do design, como o "MEU_MURAL" */
+header h1 {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  /* clamp: cresce entre ~28px e ~36px conforme a largura da tela */
+  font-size: clamp(1.75rem, 1.45rem + 1.4vw, 2.25rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--color-secondary);
+  background-color: var(--color-surface-container-low);
+  border: 2px dashed var(--color-secondary);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  transform: rotate(-1deg);
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-bottom: var(--space-5);
+  /* margem horizontal cresce com a viewport, sem nunca exagerar */
+  padding-inline: clamp(1rem, 4vw, 3rem);
+}
+
+main > section > h2 {
+  font-family: var(--font-annotation);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+  margin-bottom: var(--space-3);
+}
+
+footer {
+  padding: var(--space-4) var(--space-3);
+  font-family: var(--font-annotation);
+  font-size: 0.8125rem;
+  color: var(--color-on-surface-variant);
+  border-top: 1px dashed var(--color-outline-variant);
+  text-align: center;
+}
+
+/* foco visível — vale para qualquer elemento focável da página inteira */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* utilitário: some visualmente mas continua acessível a leitor de tela */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ==========================================================================
+   BUSCA E FILTROS (mobile-first: tudo empilhado em uma coluna)
+   ========================================================================== */
+
+main > section:first-of-type form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background-color: var(--color-surface-container-low);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  box-shadow: var(--shadow-paper);
+}
+
+main > section:first-of-type label {
+  font-family: var(--font-annotation);
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: block;
+  margin-bottom: var(--space-1);
+}
+
+#busca-titulo {
+  width: 100%;
+  min-width: 0;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  padding: var(--space-2) 0;
+  border: none;
+  border-bottom: 2px solid var(--color-outline);
+  background: transparent;
+  color: var(--color-on-surface);
+}
+
+fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+fieldset legend {
+  font-family: var(--font-annotation);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0;
+  margin-bottom: var(--space-2);
+}
+
+fieldset > div {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 1.5rem; /* alvo de clique mínimo de 24x24px CSS */
+  padding-block: var(--space-1);
+}
+
+fieldset > div + div {
+  margin-top: var(--space-1);
+}
+
+input[type="radio"] {
+  width: 1.5rem;
+  height: 1.5rem;
+  min-width: 1.5rem;
+  accent-color: var(--color-primary);
+  margin: 0;
+  cursor: pointer;
+}
+
+fieldset label {
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+button[type="submit"] {
+  font-family: var(--font-annotation);
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-on-primary);
+  background-color: var(--color-primary);
+  border: 2px solid var(--color-on-surface);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-4);
+  min-height: 2.75rem;
+  align-self: flex-start;
+  box-shadow: 4px 4px 0px var(--color-on-surface);
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+button[type="submit"]:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px var(--color-on-surface);
+}
+
+/* ==========================================================================
+   QUADRO DE TAREFAS
+   Base mobile: Grid de 1 coluna (colunas de status empilhadas).
+   ========================================================================== */
+
+section[aria-labelledby="quadro-heading"] {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+/* cada coluna de status usa Flexbox em direção vertical */
+section[aria-labelledby="quadro-heading"] > section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+section[aria-labelledby="quadro-heading"] > section > h3 {
+  display: inline-block;
+  align-self: flex-start;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.125rem;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--color-on-surface);
+  background-color: var(--color-surface-container-high);
+  padding: var(--space-1) var(--space-2);
+  border-bottom: 2px dashed var(--color-on-surface);
+  transform: rotate(-1deg);
+}
+
+section[aria-labelledby="quadro-heading"] > section:nth-of-type(even) > h3 {
+  transform: rotate(1deg);
+}
+
+section[aria-labelledby="quadro-heading"] > section > ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+/* status "concluída": título com risco, indicando arquivado (é só
+   decoração — a cor do texto continua a mesma, contraste não muda) */
+section[aria-labelledby="status-concluida-heading"] > h3 {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+/* ---------- Cartão de tarefa ---------- */
+
+article {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: var(--space-2);
+  background-color: var(--color-surface-container-lowest);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  box-shadow: var(--shadow-paper);
+  transform: rotate(-0.5deg);
+  transition: transform 0.15s ease;
+}
+
+li:nth-child(even) article {
+  transform: rotate(0.6deg);
+}
+
+article:hover,
+article:focus-within {
+  transform: rotate(0deg);
+}
+
+/* "washi tape" no topo do cartão — cor vem sempre da custom property do
+   status da coluna, nunca de um valor repetido em cada regra */
+article::before {
+  content: "";
+  position: absolute;
+  top: -0.5rem;
+  left: 50%;
+  width: 2.75rem;
+  height: 1rem;
+  transform: translateX(-50%) rotate(-3deg);
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+section[aria-labelledby="status-a-fazer"] article::before {
+  background-color: var(--status-a-fazer);
+}
+
+section[aria-labelledby="status-em-andamento-heading"] article::before {
+  background-color: var(--status-em-andamento);
+}
+
+section[aria-labelledby="status-em-revisao-heading"] article::before {
+  background-color: var(--status-em-revisao);
+}
+
+section[aria-labelledby="status-concluida-heading"] article::before {
+  background-color: var(--status-concluida);
+}
+
+/* cartões "em andamento" ganham borda na cor do status, como destaque de
+   trabalho ativo — cor ainda vinda da custom property */
+section[aria-labelledby="status-em-andamento-heading"] article {
+  border: 2px solid var(--status-em-andamento);
+}
+
+/* título: ocupa o espaço livre do cartão e trunca com reticências */
+article h4 {
+  order: 1;
+  min-width: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.0625rem;
+  line-height: 1.25;
+  color: var(--color-on-surface);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+section[aria-labelledby="status-concluida-heading"] article h4 {
+  text-decoration: line-through;
+  color: var(--color-on-surface-variant);
+}
+
+/* achata a <dl> para que dt/dd virem itens diretos do flex do <article>,
+   permitindo reordenar cada par com Flexbox sem alterar o HTML */
+article dl {
+  display: contents;
+}
+
+article dl dt,
+article dl dd {
+  min-width: 0;
+}
+
+/* rótulos (Projeto/Responsável/Prazo/Prioridade) continuam no DOM para
+   quem usa leitor de tela, mas visualmente o cartão mostra só os
+   valores, como no mockup de referência */
+article dl dt {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+article dl dd {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: var(--color-on-surface);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Prioridade (4º par dt/dd): logo abaixo do título, sempre visível,
+   como um selo/etiqueta colorido */
+article dl dt:nth-of-type(4),
+article dl dd:nth-of-type(4) {
+  order: 2;
+}
+
+article dl dd:nth-of-type(4) {
+  align-self: flex-start;
+  font-family: var(--font-annotation);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.15rem var(--space-2);
+  border-radius: var(--radius-sm);
+  border: 1px dashed currentColor;
+}
+
+article dl dd[data-prioridade="alta"] {
+  background-color: var(--color-error-container);
+  color: var(--color-on-error-container);
+}
+
+article dl dd[data-prioridade="media"] {
+  background-color: var(--color-secondary-container);
+  color: var(--color-on-secondary-container);
+}
+
+article dl dd[data-prioridade="baixa"] {
+  background-color: var(--color-surface-container-high);
+  color: var(--color-on-surface-variant);
+}
+
+/* Projeto (1º par): etiqueta discreta, como uma tag de categoria */
+article dl dt:nth-of-type(1),
+article dl dd:nth-of-type(1) {
+  order: 3;
+}
+
+article dl dd:nth-of-type(1) {
+  align-self: flex-start;
+  font-family: var(--font-annotation);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--color-on-surface-variant);
+  background-color: var(--color-surface-container-high);
+  padding: 0.1rem var(--space-2);
+  border-radius: var(--radius-sm);
+  max-width: 100%;
+}
+
+/* Responsável (2º par): texto corrido, discreto */
+article dl dt:nth-of-type(2),
+article dl dd:nth-of-type(2) {
+  order: 4;
+}
+
+article dl dd:nth-of-type(2) {
+  font-size: 0.8125rem;
+  color: var(--color-on-surface-variant);
+}
+
+/* Prazo (3º par): empurrado para a base do cartão via Flexbox */
+article dl dt:nth-of-type(3),
+article dl dd:nth-of-type(3) {
+  order: 5;
+}
+
+article dl dt:nth-of-type(3) {
+  /* margin-top:auto no primeiro item do grupo empurra o par inteiro
+     para a base do cartão, sem precisar de wrapper extra */
+  margin-top: auto;
+}
+
+article dl dd:nth-of-type(3) {
+  padding-top: var(--space-2);
+  border-top: 1px dashed var(--color-outline-variant);
+  font-weight: 700;
+  font-size: 0.8125rem;
+}
+
+/* ==========================================================================
+   BREAKPOINT 1 — 640px
+   O que quebra abaixo disso: os dois fieldsets de filtro (status e
+   prioridade) ficam ilegíveis lado a lado — rótulos e círculos de rádio
+   se espremem. Abaixo de 640px eles continuam em coluna. A partir de
+   640px sobra largura para os dois ficarem lado a lado, e o quadro já
+   comporta 2 colunas de cartão sem nenhuma ficar abaixo de ~260px.
+   ========================================================================== */
+
+@media (min-width: 640px) {
+  main > section:first-of-type form {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  main > section:first-of-type form > div {
+    flex: 1 1 100%;
+  }
+
+  main > section:first-of-type form > fieldset {
+    flex: 1 1 auto;
+  }
+
+  section[aria-labelledby="quadro-heading"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ==========================================================================
+   BREAKPOINT 2 — 1024px
+   O que quebra abaixo disso: 4 colunas de status espremidas em telas de
+   notebook pequeno deixam cada cartão com menos de ~200px, forçando
+   quebra em quase todo nome de responsável e prazo. A partir de 1024px
+   (telas de laptop/desktop comuns) cada coluna tem espaço confortável
+   para o cartão inteiro, então o quadro assume as 4 colunas lado a lado.
+   ========================================================================== */
+
+@media (min-width: 1024px) {
+  section[aria-labelledby="quadro-heading"] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  main > section:first-of-type form {
+    align-items: center;
+  }
+
+  main > section:first-of-type form > div {
+    flex: 0 1 auto;
+    min-width: 16rem;
+  }
+}
+
+/* respeita quem prefere menos movimento na tela */
+@media (prefers-reduced-motion: reduce) {
+  button[type="submit"],
+  article {
+    transition: none;
+  }
+}
