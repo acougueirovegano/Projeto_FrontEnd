@@ -270,25 +270,106 @@ button[type="submit"]:hover {
 }
 
 /* ==========================================================================
+   MENSAGEM DE ESTADO (carregando / vazio / erro)
+   Ocupa o lugar do quadro quando não há cartões para mostrar. O texto
+   real é colocado por js/estados.js via textContent; aqui é só o
+   figurino, variando pela cor conforme data-tipo.
+   ========================================================================== */
+
+#mensagem-estado {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* mesmo motivo do #quadro-colunas[hidden] acima: sem isto, o
+   display:flex de especificidade de ID vence o [hidden] nativo. */
+#mensagem-estado[hidden] {
+  display: none;
+}
+
+#mensagem-estado {
+  background-color: var(--color-surface-container-low);
+  border: 2px dashed var(--color-outline);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  font-family: var(--font-annotation);
+  font-size: 0.9375rem;
+  color: var(--color-on-surface-variant);
+}
+
+#mensagem-estado::before {
+  content: "";
+  flex-shrink: 0;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background-color: var(--color-outline);
+}
+
+#mensagem-estado[data-tipo="carregando"] {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+#mensagem-estado[data-tipo="carregando"]::before {
+  background-color: var(--color-primary);
+  animation: pulsar 1.1s ease-in-out infinite;
+}
+
+#mensagem-estado[data-tipo="erro"] {
+  border-color: var(--color-error-container);
+  background-color: var(--color-error-container);
+  color: var(--color-on-error-container);
+}
+
+#mensagem-estado[data-tipo="erro"]::before {
+  background-color: var(--color-on-error-container);
+}
+
+#mensagem-estado[data-tipo="vazio"]::before {
+  background-color: var(--color-outline);
+}
+
+@keyframes pulsar {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #mensagem-estado[data-tipo="carregando"]::before {
+    animation: none;
+  }
+}
+
+/* ==========================================================================
    QUADRO DE TAREFAS
    Base mobile: Grid de 1 coluna (colunas de status empilhadas).
    ========================================================================== */
 
-section[aria-labelledby="quadro-heading"] {
+#quadro-colunas {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-4);
 }
 
+/* #quadro-colunas é um seletor de ID (especificidade maior que a regra
+   nativa do navegador para [hidden]), então sem isto o atributo
+   `hidden` do HTML era ignorado e o quadro continuava visível por
+   baixo da mensagem de carregando/vazio/erro. */
+#quadro-colunas[hidden] {
+  display: none;
+}
+
 /* cada coluna de status usa Flexbox em direção vertical */
-section[aria-labelledby="quadro-heading"] > section {
+#quadro-colunas > section {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
   min-width: 0;
 }
 
-section[aria-labelledby="quadro-heading"] > section > h3 {
+#quadro-colunas > section > h3 {
   display: inline-block;
   align-self: flex-start;
   font-family: var(--font-display);
@@ -303,11 +384,11 @@ section[aria-labelledby="quadro-heading"] > section > h3 {
   transform: rotate(-1deg);
 }
 
-section[aria-labelledby="quadro-heading"] > section:nth-of-type(even) > h3 {
+#quadro-colunas > section:nth-of-type(even) > h3 {
   transform: rotate(1deg);
 }
 
-section[aria-labelledby="quadro-heading"] > section > ul {
+#quadro-colunas > section > ul {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
@@ -545,7 +626,7 @@ article dl dd:nth-of-type(3) {
     flex: 1 1 auto;
   }
 
-  section[aria-labelledby="quadro-heading"] {
+  #quadro-colunas {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -560,7 +641,7 @@ article dl dd:nth-of-type(3) {
    ========================================================================== */
 
 @media (min-width: 1024px) {
-  section[aria-labelledby="quadro-heading"] {
+  #quadro-colunas {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 

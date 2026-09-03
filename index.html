@@ -16,6 +16,12 @@
     <h1>Quadro de Tarefas Acadêmicas</h1>
   </header>
 
+  <!-- Região de status: existe e está vazia desde o início. É por ela
+       que leitores de tela ficam sabendo dos 4 estados. Fica fora de
+       qualquer contêiner que é escondido (mensagem-estado / quadro),
+       senão o anúncio nunca chegaria a sair. -->
+  <p id="status-regiao" role="status" aria-live="polite" class="sr-only"></p>
+
   <main>
 
     <!-- ================ BUSCA E FILTROS ================ -->
@@ -94,165 +100,42 @@
     <section aria-labelledby="quadro-heading">
       <h2 id="quadro-heading">Quadro de tarefas</h2>
 
-      <!-- ---------- Coluna: A fazer ---------- -->
-      <section aria-labelledby="status-a-fazer">
-        <h3 id="status-a-fazer">A fazer</h3>
-        <ul>
+      <!-- Tela de carregando / vazio / erro. Vazia e escondida no
+           HTML estático; js/estados.js decide quando aparece e com
+           qual texto (sempre por textContent). -->
+      <div id="mensagem-estado" hidden></div>
 
-          <li>
-            <article aria-labelledby="task-1-title">
-              <h4 id="task-1-title">Levantar referências bibliográficas</h4>
-              <dl>
-                <dt>Projeto</dt>
-                <dd>Análise de Algoritmos de Ordenação</dd>
-                <dt>Responsável</dt>
-                <dd>Ana Souza</dd>
-                <dt>Prazo</dt>
-                <dd><time datetime="2026-08-20">20/08/2026</time></dd>
-                <dt>Prioridade</dt>
-                <dd data-prioridade="alta">Alta</dd>
-              </dl>
-            </article>
-          </li>
+      <!-- Tela de sucesso: as 4 colunas. Escondida enquanto outro
+           estado estiver valendo; as <ul> começam vazias porque as
+           tarefas agora vêm de dados.json via fetch, não mais
+           escritas à mão aqui. -->
+      <div id="quadro-colunas" hidden>
 
-          <li>
-            <article aria-labelledby="task-2-title">
-              <h4 id="task-2-title">Configurar repositório Git</h4>
-              <dl>
-                <dt>Projeto</dt>
-                <dd>Sistema de Gestão de Biblioteca</dd>
-                <dt>Responsável</dt>
-                <dd>Carlos Lima</dd>
-                <dt>Prazo</dt>
-                <dd><time datetime="2026-08-15">15/08/2026</time></dd>
-                <dt>Prioridade</dt>
-                <dd data-prioridade="media">Média</dd>
-              </dl>
-            </article>
-          </li>
+        <!-- ---------- Coluna: A fazer ---------- -->
+        <section aria-labelledby="status-a-fazer">
+          <h3 id="status-a-fazer">A fazer</h3>
+          <ul></ul>
+        </section>
 
-        </ul>
-      </section>
+        <!-- ---------- Coluna: Em andamento ---------- -->
+        <section aria-labelledby="status-em-andamento-heading">
+          <h3 id="status-em-andamento-heading">Em andamento</h3>
+          <ul></ul>
+        </section>
 
-      <!-- ---------- Coluna: Em andamento ---------- -->
-      <section aria-labelledby="status-em-andamento-heading">
-        <h3 id="status-em-andamento-heading">Em andamento</h3>
-        <ul>
+        <!-- ---------- Coluna: Em revisão ---------- -->
+        <section aria-labelledby="status-em-revisao-heading">
+          <h3 id="status-em-revisao-heading">Em revisão</h3>
+          <ul></ul>
+        </section>
 
-          <li>
-            <article aria-labelledby="task-3-title">
-              <h4 id="task-3-title">Desenhar diagrama de classes</h4>
-              <dl>
-                <dt>Projeto</dt>
-                <dd>Sistema de Gestão de Biblioteca</dd>
-                <dt>Responsável</dt>
-                <dd>Ana Souza</dd>
-                <dt>Prazo</dt>
-                <dd><time datetime="2026-08-18">18/08/2026</time></dd>
-                <dt>Prioridade</dt>
-                <dd data-prioridade="alta">Alta</dd>
-              </dl>
-            </article>
-          </li>
+        <!-- ---------- Coluna: Concluída ---------- -->
+        <section aria-labelledby="status-concluida-heading">
+          <h3 id="status-concluida-heading">Concluída</h3>
+          <ul></ul>
+        </section>
 
-          <li>
-            <article aria-labelledby="task-4-title">
-              <h4 id="task-4-title">Implementar módulo de autenticação</h4>
-              <dl>
-                <dt>Projeto</dt>
-                <dd>Sistema de Gestão de Biblioteca</dd>
-                <dt>Responsável</dt>
-                <dd>Bruno Alves</dd>
-                <dt>Prazo</dt>
-                <dd><time datetime="2026-08-25">25/08/2026</time></dd>
-                <dt>Prioridade</dt>
-                <dd data-prioridade="alta">Alta</dd>
-              </dl>
-            </article>
-          </li>
-
-        </ul>
-      </section>
-
-      <!-- ---------- Coluna: Em revisão ---------- -->
-      <section aria-labelledby="status-em-revisao-heading">
-        <h3 id="status-em-revisao-heading">Em revisão</h3>
-        <ul>
-
-          <li>
-            <article aria-labelledby="task-5-title">
-              <h4 id="task-5-title">Escrever testes unitários do parser</h4>
-              <dl>
-                <dt>Projeto</dt>
-                <dd>Análise de Algoritmos de Ordenação</dd>
-                <dt>Responsável</dt>
-                <dd>Carlos Lima</dd>
-                <dt>Prazo</dt>
-                <dd><time datetime="2026-08-22">22/08/2026</time></dd>
-                <dt>Prioridade</dt>
-                <dd data-prioridade="baixa">Baixa</dd>
-              </dl>
-            </article>
-          </li>
-
-          <li>
-            <article aria-labelledby="task-6-title">
-              <h4 id="task-6-title">Revisar relatório final</h4>
-              <dl>
-                <dt>Projeto</dt>
-                <dd>Impacto de Redes Sociais em Hábitos de Estudo</dd>
-                <dt>Responsável</dt>
-                <dd>Débora Melo</dd>
-                <dt>Prazo</dt>
-                <dd><time datetime="2026-08-19">19/08/2026</time></dd>
-                <dt>Prioridade</dt>
-                <dd data-prioridade="media">Média</dd>
-              </dl>
-            </article>
-          </li>
-
-        </ul>
-      </section>
-
-      <!-- ---------- Coluna: Concluída ---------- -->
-      <section aria-labelledby="status-concluida-heading">
-        <h3 id="status-concluida-heading">Concluída</h3>
-        <ul>
-
-          <li>
-            <article aria-labelledby="task-7-title">
-              <h4 id="task-7-title">Apresentar resultados preliminares</h4>
-              <dl>
-                <dt>Projeto</dt>
-                <dd>Impacto de Redes Sociais em Hábitos de Estudo</dd>
-                <dt>Responsável</dt>
-                <dd>Débora Melo</dd>
-                <dt>Prazo</dt>
-                <dd><time datetime="2026-08-10">10/08/2026</time></dd>
-                <dt>Prioridade</dt>
-                <dd data-prioridade="media">Média</dd>
-              </dl>
-            </article>
-          </li>
-
-          <li>
-            <article aria-labelledby="task-8-title">
-              <h4 id="task-8-title">Coletar dados via formulário</h4>
-              <dl>
-                <dt>Projeto</dt>
-                <dd>Impacto de Redes Sociais em Hábitos de Estudo</dd>
-                <dt>Responsável</dt>
-                <dd>Ana Souza</dd>
-                <dt>Prazo</dt>
-                <dd><time datetime="2026-08-05">05/08/2026</time></dd>
-                <dt>Prioridade</dt>
-                <dd data-prioridade="baixa">Baixa</dd>
-              </dl>
-            </article>
-          </li>
-
-        </ul>
-      </section>
+      </div>
 
     </section>
 
@@ -262,6 +145,8 @@
   <footer>
     <p>Desenvolvido por Kaio Bezerra Santos — Disciplina: Desenvolvimento Front-end</p>
   </footer>
+
+  <script type="module" src="js/main.js"></script>
 
 </body>
 </html>
