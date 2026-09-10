@@ -91,7 +91,16 @@
           </div>
         </fieldset>
 
-        <button type="submit">Aplicar filtros</button>
+        <!-- Ordenação por prazo -->
+        <div>
+          <label for="ordenacao">Ordenar por prazo</label>
+          <select id="ordenacao" name="ordenacao">
+            <option value="prazo-asc">Mais próximo primeiro</option>
+            <option value="prazo-desc">Mais distante primeiro</option>
+          </select>
+        </div>
+
+        <button type="button" id="limpar-filtros">Limpar filtros</button>
 
       </form>
     </section>
