@@ -1,12 +1,15 @@
 // js/estados.js
-// Responsável só por decidir qual das quatro telas está valendo:
-// carregando, sucesso, vazio ou erro. Nenhuma requisição acontece
-// aqui — os dados (ou o erro) já chegam prontos de js/main.js.
+// Responsável só por decidir qual das cinco telas está valendo:
+// carregando, sucesso, vazio, sem-resultado ou erro. Nenhuma
+// requisição acontece aqui — os dados (ou o erro) já chegam prontos
+// de js/main.js, que é quem decide qual destes chamar.
 
 import { renderizarTarefas } from './renderizacao.js';
 
 const MENSAGEM_CARREGANDO = 'Carregando tarefas…';
 const MENSAGEM_VAZIO = 'Nenhuma tarefa cadastrada no momento.';
+const MENSAGEM_SEM_RESULTADO =
+  'Nenhuma tarefa encontrada para os filtros aplicados.';
 
 function elementos() {
   return {
@@ -37,12 +40,13 @@ function anunciar(texto) {
 }
 
 /**
- * Decide qual das quatro telas mostrar e anuncia a mudança para
+ * Decide qual das cinco telas mostrar e anuncia a mudança para
  * leitores de tela através da região de status.
  *
- * @param {'carregando'|'sucesso'|'vazio'|'erro'} estado
- * @param {Array|string} [dados] - array de tarefas (sucesso) ou
- *   mensagem de erro já pronta para exibição (erro)
+ * @param {'carregando'|'sucesso'|'vazio'|'sem-resultado'|'erro'} estado
+ * @param {Array|string} [dados] - array de tarefas VISÍVEIS (sucesso,
+ *   já filtradas/ordenadas por js/derivacao.js) ou mensagem de erro
+ *   já pronta para exibição (erro)
  */
 export function renderizarEstado(estado, dados) {
   switch (estado) {
@@ -58,6 +62,12 @@ export function renderizarEstado(estado, dados) {
       break;
     }
 
+    case 'sem-resultado': {
+      mostrarMensagem(MENSAGEM_SEM_RESULTADO, 'sem-resultado');
+      anunciar(MENSAGEM_SEM_RESULTADO);
+      break;
+    }
+
     case 'erro': {
       mostrarMensagem(dados, 'erro');
       anunciar(dados);
@@ -69,7 +79,7 @@ export function renderizarEstado(estado, dados) {
       renderizarTarefas(dados);
       const total = dados.length;
       const texto =
-        total === 1 ? '1 tarefa carregada.' : `${total} tarefas carregadas.`;
+        total === 1 ? '1 tarefa encontrada.' : `${total} tarefas encontradas.`;
       anunciar(texto);
       break;
     }
